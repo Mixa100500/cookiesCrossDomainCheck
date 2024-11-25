@@ -1,24 +1,29 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const app = express();
 const PORT = 3003;
 
-// Подключаем middleware для работы с куки
 app.use(cookieParser());
 
-// Роут для обработки запросов
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
+
 app.get('/', (req, res) => {
   const token = req.cookies.token;
 
   if (token) {
-    res.status(200).send(`Token received: ${token}`);
+    res.json({ message: 'Cookie received!', token });
   } else {
-    res.status(400).send('No token found in cookies');
+    res.status(400).json({ message: 'No cookie found with the name "token".' });
   }
 });
 
-// Запуск сервера
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });
